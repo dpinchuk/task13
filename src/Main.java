@@ -1,3 +1,5 @@
+import com.mysql.jdbc.exceptions.jdbc4.MySQLSyntaxErrorException;
+
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.sql.Connection;
@@ -10,14 +12,19 @@ public class Main {
     public static final String DB = "auction_db";
     public static final String USER = "dpinchuk";
     public static final String PASS = "dmss111278";
+    public static Connection connection;
+    public static Controller controller;
 
     public static void main(String[] args) throws IOException, SQLException, IllegalAccessException, InstantiationException, InvocationTargetException, NoSuchMethodException {
 
-        Connection connection = DriverManager.getConnection(URL + "/" + DB, USER, PASS);
-        Controller controller = new Controller(connection);
-        controller.selectItem();
-        connection.close();
-
+        try {
+            connection = DriverManager.getConnection(URL + "/" + DB, USER, PASS);
+            controller = new Controller(connection);
+            controller.selectItem();
+            connection.close();
+        } catch (MySQLSyntaxErrorException e) {
+            System.out.println("Database connection error...");
+        }
     }
 
 }
