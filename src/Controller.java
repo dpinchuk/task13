@@ -155,6 +155,7 @@ public class Controller extends Auction {
     }
 
     private void addEntityToDB(String table, Class modelClass, String[] elements, String params, List list) throws SQLException, IOException, NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
+        System.out.println("[ADDING]");
         boolean noExit = true;
         this.constructor = modelClass.getConstructors()[0];
         this.parameters = constructor.getParameterTypes();
@@ -198,6 +199,7 @@ public class Controller extends Auction {
     }
 
     private void deleteEntityFromDB(String table, String fieldID, Class modelClass, List list) throws SQLException, IOException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
+        System.out.println("[DELETING]");
         String id = inputId(table, this.getEntitiesArray(fieldID, table));
         boolean exit = true;
         if (id.equals("0")) {
@@ -214,12 +216,14 @@ public class Controller extends Auction {
     }
 
     private void editEntityInDB(String table, String[] fieldNames, Class modelClass, List list) throws IOException, SQLException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
+        System.out.println("[EDITING]");
         String id = inputId(table, this.getEntitiesArray(fieldNames[0], table));
         boolean noExit = true;
         if (id.equals("0") || id.equals("")) {
             noExit = false;
         }
         if (noExit) {
+            boolean noExitEdit = false;
             String[] newValue = new String[fieldNames.length - 1];
             String qwery = "UPDATE " + table + " SET ";
             for (int i = 1; i < fieldNames.length; i++) {
@@ -231,21 +235,24 @@ public class Controller extends Auction {
                         System.out.println(fieldNames[i] + " is 0");
                         newValue[i - 1] = "0";
                     } else {
-                        noExit = false;
+                        noExitEdit = false;
+                        System.out.println("Error input data. Nothing edited.");
                         break;
                     }
                 }
                 qwery += fieldNames[i] + " = ?, ";
             }
-            qwery = qwery.substring(0, qwery.length() - 2) + " WHERE " + fieldNames[0] + " = " + id;
-            this.preparedStatement = this.connection.prepareStatement(qwery);
-            for (int i = 0; i < newValue.length; i++) {
-                this.preparedStatement.setString(i + 1, newValue[i]);
+            if (noExitEdit) {
+                qwery = qwery.substring(0, qwery.length() - 2) + " WHERE " + fieldNames[0] + " = " + id;
+                this.preparedStatement = this.connection.prepareStatement(qwery);
+                for (int i = 0; i < newValue.length; i++) {
+                    this.preparedStatement.setString(i + 1, newValue[i]);
+                }
+                this.preparedStatement.executeUpdate();
+                this.preparedStatement.close();
+                list.clear();
+                this.addObjectToList(table, modelClass, list);
             }
-            this.preparedStatement.executeUpdate();
-            this.preparedStatement.close();
-            list.clear();
-            this.addObjectToList(table, modelClass, list);
         }
     }
 
