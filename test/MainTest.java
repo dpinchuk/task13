@@ -1,6 +1,8 @@
 import com.mysql.jdbc.exceptions.jdbc4.MySQLSyntaxErrorException;
 import org.junit.Test;
 
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -19,11 +21,10 @@ public class MainTest {
     private Controller controller;
 
     @Test
-    public void testConnectionIsValid() throws SQLException {
+    public void testIsValid() throws SQLException {
         connection = DriverManager.getConnection(URL + "/" + DB, USER, PASS);
         assertTrue(connection.isValid(1000));
         connection.close();
-
     }
 
     @Test
@@ -31,6 +32,13 @@ public class MainTest {
         connection = DriverManager.getConnection(URL + "/" + DB, USER, PASS);
         connection.close();
         assertTrue(connection.isClosed());
+    }
+
+    @Test
+    public void testIsClosedNegative() throws SQLException {
+        Connection connection = DriverManager.getConnection(URL + "/" + DB, USER, PASS);
+        assertFalse(connection.isClosed());
+        connection.close();
     }
 
     @Test
@@ -48,15 +56,44 @@ public class MainTest {
     }
 
     @Test
-    public void testIsClosedNegative() throws SQLException {
+    public void testConnection() throws SQLException {
         connection = DriverManager.getConnection(URL + "/" + DB, USER, PASS);
-        assertFalse(connection.isClosed());
         connection.close();
+        assertFalse(connection.isValid(100));
     }
 
     @Test(expected = MySQLSyntaxErrorException.class)
     public void testFakeDB() throws SQLException {
-        connection = DriverManager.getConnection(URL + "/" + "fake_db", USER, PASS);
+        connection = DriverManager.getConnection(URL + "/" + "fakeDB", USER, PASS);
+        connection.close();
+    }
+
+    @Test(expected = SQLException.class)
+    public void testFakeUser() throws SQLException {
+        connection = DriverManager.getConnection(URL + "/" + DB, "fakeUser", PASS);
+        connection.close();
+    }
+
+    @Test(expected = SQLException.class)
+    public void testFakePass() throws SQLException {
+        connection = DriverManager.getConnection(URL + "/" + DB, USER, "fakePassword");
+        connection.close();
+    }
+
+    @Test(expected = SQLException.class)
+    public void testFake() throws SQLException {
+        connection = DriverManager.getConnection(null, null, null);
+        connection.close();
+    }
+
+    @Test
+    public void testController() throws SQLException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException, IOException {
+        connection = DriverManager.getConnection(URL + "/" + DB, USER, PASS);
+        controller = new Controller(connection);
+        controller.selectItem();
+
+
+
         connection.close();
     }
 
