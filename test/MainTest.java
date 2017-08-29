@@ -86,15 +86,4 @@ public class MainTest {
         connection.close();
     }
 
-    @Test
-    public void testController() throws SQLException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException, IOException {
-        connection = DriverManager.getConnection(URL + "/" + DB, USER, PASS);
-        controller = new Controller(connection);
-        controller.selectItem();
-
-
-
-        connection.close();
-    }
-
 }
