@@ -16,7 +16,6 @@ public class Main {
     public static Controller controller;
 
     public static void main(String[] args) throws IOException, SQLException, IllegalAccessException, InstantiationException, InvocationTargetException, NoSuchMethodException {
-
         try {
             connection = DriverManager.getConnection(URL + "/" + DB, USER, PASS);
             controller = new Controller(connection);
