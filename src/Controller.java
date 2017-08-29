@@ -119,16 +119,16 @@ public class Controller extends Auction {
                 this.editEntityInDB("bids", new String[]{"bid_id", "bid_step", "bid_current", "buyer_id", "product_id"}, Bid.class, bidsList);
                 break;
             case "13":
-                this.deleteEntityFromDB("sellers", "seller_id", Seller.class, sellersList);
+                this.deleteEntityFromDB("sellers", Seller.class, sellersList);
                 break;
             case "14":
-                this.deleteEntityFromDB("products", "product_id", Product.class, productsList);
+                this.deleteEntityFromDB("products", Product.class, productsList);
                 break;
             case "15":
-                this.deleteEntityFromDB("buyers", "buyer_id", Buyer.class, buyersList);
+                this.deleteEntityFromDB("buyers", Buyer.class, buyersList);
                 break;
             case "16":
-                this.deleteEntityFromDB("bids", "bid_id", Bid.class, bidsList);
+                this.deleteEntityFromDB("bids", Bid.class, bidsList);
                 break;
             default:
                 break;
@@ -136,7 +136,7 @@ public class Controller extends Auction {
     }
 
     private void addObjectToList(String table, Class modelClass, List list) throws SQLException, IllegalAccessException, InstantiationException, InvocationTargetException, NoSuchMethodException {
-        this.preparedStatement = this.connection.prepareStatement("SELECT * FROM " + table);
+        this.preparedStatement = this.connection.prepareStatement("SELECT * FROM " + table + " ORDER BY " + table.substring(0, table.length() - 1) + "_id");
         this.resultQuery = this.preparedStatement.executeQuery();
         int columnCount = this.resultQuery.getMetaData().getColumnCount();
         String string = "";
@@ -167,7 +167,7 @@ public class Controller extends Auction {
             if (isNecessaryId(elements[i])) {
                 System.out.print("[ ");
                 String s = getTableID(elements[i]).substring(0, getTableID(elements[i]).length() - 3) + "s";
-                for (String e: this.getEntitiesArray(getTableID(elements[i]), s)) {
+                for (String e : this.getEntitiesArray(s)) {
                     System.out.print(e + " ");
                 }
                 System.out.print("]: ");
@@ -198,15 +198,15 @@ public class Controller extends Auction {
         }
     }
 
-    private void deleteEntityFromDB(String table, String fieldID, Class modelClass, List list) throws SQLException, IOException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
+    private void deleteEntityFromDB(String table, Class modelClass, List list) throws SQLException, IOException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
         System.out.println("[DELETING]");
-        String id = inputId(table, this.getEntitiesArray(fieldID, table));
+        String id = inputId(table, this.getEntitiesArray(table));
         boolean exit = true;
         if (id.equals("0")) {
             exit = false;
         }
         if (exit) {
-            this.preparedStatement = this.connection.prepareStatement("DELETE FROM " + table + " WHERE " + fieldID + " = ?");
+            this.preparedStatement = this.connection.prepareStatement("DELETE FROM " + table + " WHERE " + table.substring(0, table.length() - 1) + "_id" + " = ?");
             this.preparedStatement.setString(1, id);
             this.preparedStatement.executeUpdate();
             this.preparedStatement.close();
@@ -217,7 +217,7 @@ public class Controller extends Auction {
 
     private void editEntityInDB(String table, String[] fieldNames, Class modelClass, List list) throws IOException, SQLException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
         System.out.println("[EDITING]");
-        String id = inputId(table, this.getEntitiesArray(fieldNames[0], table));
+        String id = inputId(table, this.getEntitiesArray(table));
         boolean noExit = true;
         if (id.equals("0") || id.equals("")) {
             noExit = false;
@@ -256,12 +256,12 @@ public class Controller extends Auction {
         }
     }
 
-    private String[] getEntitiesArray(String id, String table) throws SQLException {
-        this.preparedStatement = this.connection.prepareStatement("SELECT " + id + " FROM " + table);
+    private String[] getEntitiesArray(String table) throws SQLException {
+        this.preparedStatement = this.connection.prepareStatement("SELECT " + table.substring(0, table.length() - 1) + "_id" + " FROM " + table + " ORDER BY " + table.substring(0, table.length() - 1) + "_id");
         this.resultQuery = this.preparedStatement.executeQuery();
         String rows = "";
         while (this.resultQuery.next()) {
-            rows += this.resultQuery.getString(id) + "|";
+            rows += this.resultQuery.getString(table.substring(0, table.length() - 1) + "_id") + "|";
         }
         return getData(rows);
     }
@@ -316,8 +316,8 @@ public class Controller extends Auction {
 
     private boolean isNecessaryId(String id) {
         if (id.toLowerCase().contains("seller_id") ||
-            id.toLowerCase().contains("product_id") ||
-            id.toLowerCase().contains("buyer_id")) {
+                id.toLowerCase().contains("product_id") ||
+                id.toLowerCase().contains("buyer_id")) {
             return true;
         } else {
             return false;
