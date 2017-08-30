@@ -5,8 +5,6 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
-import static java.lang.Runtime.getRuntime;
-
 public class ViewTest extends OutputTest {
 
     private View view;
@@ -69,7 +67,7 @@ public class ViewTest extends OutputTest {
     private final String stringNegative = "text";
     private final List<String> listQueryP = Arrays.asList("1|Dima|Pinchuk", "2|Evgeniy|Tyapunoff", "2|Sukin|Kot");
     private final String tableName = "TestTable";
-    private final String[] columnNames = new String[]{"TestColumn1", "TestColumn2", "TestColumn3"};
+    private final String[] columnNames = {"TestColumn1", "TestColumn2", "TestColumn3"};
     private final String format = "%15s %15s %15s";
 
     private final List<String> listQueryN = Arrays.asList("1DimaPinchuk", "2EvgeniyTyapunoff", "2SukinKot");

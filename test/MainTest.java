@@ -1,8 +1,6 @@
 import com.mysql.jdbc.exceptions.jdbc4.MySQLSyntaxErrorException;
 import org.junit.Test;
 
-import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
