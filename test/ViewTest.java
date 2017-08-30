@@ -36,14 +36,6 @@ public class ViewTest extends OutputTest {
             "[Product_ID] "
     };
 
-    private final String[] stringTesAddBidString = {
-            "id",
-            "[Bid <Step>]",
-            "[Bid <Current>]",
-            "[Buyer_ID] ",
-            "[Product_ID] "
-    };
-
     private final String stringViewActions =
             "Select an Item:" + "\n" +
             "[0]  -> Exit from Auction" + "\n" +
@@ -151,35 +143,35 @@ public class ViewTest extends OutputTest {
     public void testAddBidString0() throws IOException {
         view = new View();
         System.out.print(view.addBidString[0]);
-        Assert.assertEquals(stringTesAddBidString[0], output.toString());
+        Assert.assertEquals(stringTestAddBidString[0], output.toString());
     }
 
     @Test
     public void testAddBidString1() throws IOException {
         view = new View();
         System.out.print(view.addBidString[1]);
-        Assert.assertEquals(stringTesAddBidString[1], output.toString());
+        Assert.assertEquals(stringTestAddBidString[1], output.toString());
     }
 
     @Test
     public void testAddBidString2() throws IOException {
         view = new View();
         System.out.print(view.addBidString[2]);
-        Assert.assertEquals(stringTesAddBidString[2], output.toString());
+        Assert.assertEquals(stringTestAddBidString[2], output.toString());
     }
 
     @Test
     public void testAddBidString3() throws IOException {
         view = new View();
         System.out.print(view.addBidString[3]);
-        Assert.assertEquals(stringTesAddBidString[3], output.toString());
+        Assert.assertEquals(stringTestAddBidString[3], output.toString());
     }
 
     @Test
     public void testAddBidString4() throws IOException {
         view = new View();
         System.out.print(view.addBidString[4]);
-        Assert.assertEquals(stringTesAddBidString[4], output.toString());
+        Assert.assertEquals(stringTestAddBidString[4], output.toString());
     }
 
     @Test
