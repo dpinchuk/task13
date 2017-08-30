@@ -223,11 +223,19 @@ public class Controller extends Auction {
             noExit = false;
         }
         if (noExit) {
-            boolean noExitEdit = false;
+            boolean noExitEdit = true;
             String[] newValue = new String[fieldNames.length - 1];
             String qwery = "UPDATE " + table + " SET ";
             for (int i = 1; i < fieldNames.length; i++) {
-                System.out.println("Current [" + fieldNames[i] + "] -> " + this.getEntity(table, fieldNames[i], id));
+                if (this.isNecessaryId(fieldNames[i])) {
+                    System.out.print("Current [" + fieldNames[i] + "] -> " + this.getEntity(table, fieldNames[i], id) + " All -> " + "[ ");
+                    for (String strId : this.getEntitiesArray(fieldNames[i].substring(0, fieldNames[i].length() - 3) + "s")) {
+                        System.out.print(strId + " ");
+                    }
+                    System.out.println("]");
+                } else {
+                    System.out.println("Current [" + fieldNames[i] + "] -> " + this.getEntity(table, fieldNames[i], id));
+                }
                 System.out.print("Edit [" + fieldNames[i].toUpperCase() + "]: ");
                 newValue[i - 1] = this.reader.readLine();
                 if (newValue[i - 1].equals("")) {
@@ -235,6 +243,20 @@ public class Controller extends Auction {
                         System.out.println(fieldNames[i] + " is 0");
                         newValue[i - 1] = "0";
                     } else {
+                        noExitEdit = false;
+                        System.out.println("Error input data. Nothing edited.");
+                        break;
+                    }
+                }
+                if (newValue[i - 1].equals("0") && this.isNecessaryId(fieldNames[i])) {
+                    noExitEdit = false;
+                    System.out.println("Error input data. Nothing edited.");
+                    break;
+                }
+                if (this.isNecessaryId(fieldNames[i]) || this.isNecessaryPrice(fieldNames[i]) || this.isNecessaryBid(fieldNames[i])) {
+                    try {
+                        int num = Integer.parseInt(newValue[i - 1]);
+                    } catch (Exception e) {
                         noExitEdit = false;
                         System.out.println("Error input data. Nothing edited.");
                         break;
@@ -272,6 +294,12 @@ public class Controller extends Auction {
         String entity = "";
         while (this.resultQuery.next()) {
             entity = this.resultQuery.getString(fieldName);
+        }
+        if (this.isNecessaryPrice(fieldName) && (entity == null)) {
+            entity = "0";
+        }
+        if (this.isNecessaryPrice(fieldName) && (entity.equals(""))) {
+            entity = "0";
         }
         this.resultQuery.close();
         this.preparedStatement.close();
@@ -316,8 +344,8 @@ public class Controller extends Auction {
 
     private boolean isNecessaryId(String id) {
         if (id.toLowerCase().contains("seller_id") ||
-                id.toLowerCase().contains("product_id") ||
-                id.toLowerCase().contains("buyer_id")) {
+            id.toLowerCase().contains("product_id") ||
+            id.toLowerCase().contains("buyer_id")) {
             return true;
         } else {
             return false;
@@ -326,6 +354,15 @@ public class Controller extends Auction {
 
     private boolean isNecessaryPrice(String id) {
         if (id.toLowerCase().contains("price")) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    private boolean isNecessaryBid(String str) {
+        if (str.toLowerCase().contains("step") ||
+            str.toLowerCase().contains("current")) {
             return true;
         } else {
             return false;
