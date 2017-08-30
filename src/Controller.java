@@ -182,6 +182,14 @@ public class Controller extends Auction {
                     break;
                 }
             }
+            if (this.isNecessaryId(elements[i]) || this.isNecessaryPrice(elements[i]) || this.isNecessaryBid(elements[i])) {
+                try {
+                    int num = Integer.parseInt(strings[i]);
+                } catch (Exception e) {
+                    noExit = false;
+                    break;
+                }
+            }
         }
         if (noExit) {
             this.preparedStatement = this.connection.prepareStatement("INSERT INTO " + table + " VALUES (null, " + params + ")");
