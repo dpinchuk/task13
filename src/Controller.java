@@ -173,15 +173,6 @@ public class Controller extends Auction {
                 System.out.print("]: ");
             }
             strings[i] = this.reader.readLine();
-            if (strings[i].equals("")) {
-                if (this.isNecessaryPrice(elements[i])) {
-                    System.out.println(elements[i] + " is 0");
-                    strings[i] = "0";
-                } else {
-                    noExit = false;
-                    break;
-                }
-            }
             if (this.isNecessaryId(elements[i]) || this.isNecessaryPrice(elements[i]) || this.isNecessaryBid(elements[i])) {
                 try {
                     int num = Integer.parseInt(strings[i]);
@@ -189,6 +180,10 @@ public class Controller extends Auction {
                     noExit = false;
                     break;
                 }
+            }
+            noExit = this.isValidData(table, strings[i]);
+            if (!noExit) {
+                break;
             }
         }
         if (noExit) {
@@ -252,13 +247,11 @@ public class Controller extends Auction {
                         newValue[i - 1] = "0";
                     } else {
                         noExitEdit = false;
-                        System.out.println("Error input data. Nothing edited.");
                         break;
                     }
                 }
                 if (newValue[i - 1].equals("0") && this.isNecessaryId(fieldNames[i])) {
                     noExitEdit = false;
-                    System.out.println("Error input data. Nothing edited.");
                     break;
                 }
                 if (this.isNecessaryId(fieldNames[i]) || this.isNecessaryPrice(fieldNames[i]) || this.isNecessaryBid(fieldNames[i])) {
@@ -266,7 +259,6 @@ public class Controller extends Auction {
                         int num = Integer.parseInt(newValue[i - 1]);
                     } catch (Exception e) {
                         noExitEdit = false;
-                        System.out.println("Error input data. Nothing edited.");
                         break;
                     }
                 }
@@ -282,6 +274,8 @@ public class Controller extends Auction {
                 this.preparedStatement.close();
                 list.clear();
                 this.addObjectToList(table, modelClass, list);
+            } else {
+                System.out.println("Error input data. Nothing edited.");
             }
         }
     }
@@ -375,6 +369,20 @@ public class Controller extends Auction {
         } else {
             return false;
         }
+    }
+
+    private boolean isValidData(String table, String str) {
+        if (str.equals("")) {
+            return false;
+        }
+        if (this.isNecessaryId(table) || this.isNecessaryPrice(table) || this.isNecessaryBid(table)) {
+            try {
+                int num = Integer.parseInt(str);
+            } catch (Exception e) {
+                return false;
+            }
+        }
+        return true;
     }
 
 }
