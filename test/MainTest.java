@@ -16,7 +16,6 @@ public class MainTest {
     private final String USER = "dpinchuk";
     private final String PASS = "dmss111278";
     private Connection connection;
-    private Controller controller;
 
     @Test
     public void testIsValid() throws SQLException {
