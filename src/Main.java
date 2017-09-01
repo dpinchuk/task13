@@ -8,12 +8,12 @@ import java.sql.SQLException;
 
 public class Main {
 
-    public static final String URL = "jdbc:mysql://127.0.0.1:3306";
-    public static final String DB = "auction_db";
-    public static final String USER = "dpinchuk";
-    public static final String PASS = "dmss111278";
-    public static Connection connection;
-    public static Controller controller;
+    private static final String URL = "jdbc:mysql://127.0.0.1:3306";
+    private static final String DB = "auction_db";
+    private static final String USER = "dpinchuk";
+    private static final String PASS = "dmss111278";
+    private static Connection connection;
+    private static Controller controller;
 
     public static void main(String[] args) throws IOException, SQLException, IllegalAccessException, InstantiationException, InvocationTargetException, NoSuchMethodException {
         try {

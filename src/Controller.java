@@ -7,12 +7,18 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Controller extends Auction {
+public class Controller {
+
+    private List<Seller> sellersList = new ArrayList<>();
+    private List<Product> productsList = new ArrayList<>();
+    private List<Buyer> buyersList = new ArrayList<>();
+    private List<Bid> bidsList = new ArrayList<>();
 
     private BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
     private View view = new View();
     private PreparedStatement preparedStatement;
     private ResultSet resultQuery;
+
     Connection connection;
     Constructor constructor;
     Class[] parameters;
@@ -24,14 +30,14 @@ public class Controller extends Auction {
     }
 
     private void initLists() throws InvocationTargetException, SQLException, InstantiationException, NoSuchMethodException, IllegalAccessException {
-        sellersList.clear();
-        productsList.clear();
-        buyersList.clear();
-        bidsList.clear();
-        this.addObjectToList("sellers", Seller.class, sellersList);
-        this.addObjectToList("products", Product.class, productsList);
-        this.addObjectToList("buyers", Buyer.class, buyersList);
-        this.addObjectToList("bids", Bid.class, bidsList);
+        this.sellersList.clear();
+        this.productsList.clear();
+        this.buyersList.clear();
+        this.bidsList.clear();
+        this.addObjectToList("sellers", Seller.class, this.sellersList);
+        this.addObjectToList("products", Product.class, this.productsList);
+        this.addObjectToList("buyers", Buyer.class, this.buyersList);
+        this.addObjectToList("bids", Bid.class, this.bidsList);
     }
 
     public void selectItem() throws IOException, SQLException, NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException {
@@ -39,7 +45,7 @@ public class Controller extends Auction {
         System.out.println(this.view.viewActions);
         while (true) {
             param = this.getParam();
-            if (param.equals(EXIT)) {
+            if (param.equals(Tools.EXIT)) {
                 System.out.println("\n" + "Exit from <Auction>...");
                 break;
             } else {
@@ -53,13 +59,13 @@ public class Controller extends Auction {
         while (true) {
             System.out.print("\n" + "Select [Menu Item] -> ");
             param = reader.readLine();
-            if (param.equals(EXIT)) {
+            if (param.equals(Tools.EXIT)) {
                 System.out.println("\n" + "Exit from current <Menu>...");
                 break;
             }
             return param;
         }
-        return EXIT;
+        return Tools.EXIT;
     }
 
     private void mainMenu(String action) throws IOException, SQLException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
@@ -68,67 +74,67 @@ public class Controller extends Auction {
                 break;
             case "1":
                 list = new ArrayList<>();
-                for (Seller seller : sellersList) {
+                for (Seller seller : this.sellersList) {
                     list.add(String.valueOf(seller.getSellerId()) + "|" + seller.getSellerName() + "|" + seller.getSellerLastname());
                 }
                 this.view.printTableData(list, "sellers", new String[]{"[ID]", "[NAME]", "[LASTNAME]"}, "%4s %12s %16s");
                 break;
             case "2":
                 list = new ArrayList<>();
-                for (Product product : productsList) {
+                for (Product product : this.productsList) {
                     list.add(String.valueOf(product.getProductId()) + "|" + product.getProductName() + "|" + product.getProductStartPrice() + "|" + product.getProductSalePrice() + "|" + String.valueOf(product.getIdSeller()));
                 }
                 this.view.printTableData(list, "products", new String[]{"[ID]", "[PRODUCT NAME]", "[PRICE START]", "[PRICE SALE]", "[SELLER ID]"}, "%4s %20s %19s %18s %17s");
                 break;
             case "3":
                 list = new ArrayList<>();
-                for (Buyer buyer : buyersList) {
+                for (Buyer buyer : this.buyersList) {
                     list.add(String.valueOf(buyer.getBuyerId()) + "|" + buyer.getBuyerName() + "|" + buyer.getBuyerLastname());
                 }
                 this.view.printTableData(list, "buyers", new String[]{"[ID]", "[NAME]", "[LASTNAME]"}, "%4s %12s %16s");
                 break;
             case "4":
                 list = new ArrayList<>();
-                for (Bid bid : bidsList) {
+                for (Bid bid : this.bidsList) {
                     list.add(String.valueOf(bid.getBidId()) + "|" + bid.getBidStep() + "|" + bid.getBidCurrent() + "|" + bid.getBuyerId() + "|" + bid.getProductId());
                 }
                 this.view.printTableData(list, "bids", new String[]{"[ID]", "[BID STEP]", "[CURRENT]", "[BUYER ID]", "[SELLER ID]"}, "%4s %16s %15s %16s %17s");
                 break;
             case "5":
-                this.addEntityToDB("sellers", Seller.class, this.view.addSellerString, "?, ?", sellersList);
+                this.addEntityToDB("sellers", Seller.class, this.view.addSellerString, "?, ?", this.sellersList);
                 break;
             case "6":
-                this.addEntityToDB("products", Product.class, this.view.addProductString, "?, ?, ?, ?", productsList);
+                this.addEntityToDB("products", Product.class, this.view.addProductString, "?, ?, ?, ?", this.productsList);
                 break;
             case "7":
-                this.addEntityToDB("buyers", Buyer.class, this.view.addBuyerString, "?, ?", buyersList);
+                this.addEntityToDB("buyers", Buyer.class, this.view.addBuyerString, "?, ?", this.buyersList);
                 break;
             case "8":
-                this.addEntityToDB("bids", Bid.class, this.view.addBidString, "?, ?, ?, ?", bidsList);
+                this.addEntityToDB("bids", Bid.class, this.view.addBidString, "?, ?, ?, ?", this.bidsList);
                 break;
             case "9":
-                this.editEntityInDB("sellers", new String[]{"seller_id", "seller_name", "seller_lastname"}, Seller.class, sellersList);
+                this.editEntityInDB("sellers", new String[]{"seller_id", "seller_name", "seller_lastname"}, Seller.class, this.sellersList);
                 break;
             case "10":
-                this.editEntityInDB("products", new String[]{"product_id", "product_name", "product_start_price", "product_sale_price", "seller_id"}, Product.class, productsList);
+                this.editEntityInDB("products", new String[]{"product_id", "product_name", "product_start_price", "product_sale_price", "seller_id"}, Product.class, this.productsList);
                 break;
             case "11":
-                this.editEntityInDB("buyers", new String[]{"buyer_id", "buyer_name", "buyer_lastname"}, Buyer.class, buyersList);
+                this.editEntityInDB("buyers", new String[]{"buyer_id", "buyer_name", "buyer_lastname"}, Buyer.class, this.buyersList);
                 break;
             case "12":
-                this.editEntityInDB("bids", new String[]{"bid_id", "bid_step", "bid_current", "buyer_id", "product_id"}, Bid.class, bidsList);
+                this.editEntityInDB("bids", new String[]{"bid_id", "bid_step", "bid_current", "buyer_id", "product_id"}, Bid.class, this.bidsList);
                 break;
             case "13":
-                this.deleteEntityFromDB("sellers", Seller.class, sellersList);
+                this.deleteEntityFromDB("sellers", Seller.class, this.sellersList);
                 break;
             case "14":
-                this.deleteEntityFromDB("products", Product.class, productsList);
+                this.deleteEntityFromDB("products", Product.class, this.productsList);
                 break;
             case "15":
-                this.deleteEntityFromDB("buyers", Buyer.class, buyersList);
+                this.deleteEntityFromDB("buyers", Buyer.class, this.buyersList);
                 break;
             case "16":
-                this.deleteEntityFromDB("bids", Bid.class, bidsList);
+                this.deleteEntityFromDB("bids", Bid.class, this.bidsList);
                 break;
             default:
                 break;
@@ -146,7 +152,7 @@ public class Controller extends Auction {
             }
             this.constructor = modelClass.getConstructors()[0];
             this.parameters = constructor.getParameterTypes();
-            String[] strings = getData(string);
+            String[] strings = Tools.getData(string);
             list.add(modelClass.getConstructor(parameters).newInstance(strings));
             string = "";
         }
@@ -287,7 +293,7 @@ public class Controller extends Auction {
         while (this.resultQuery.next()) {
             rows += this.resultQuery.getString(table.substring(0, table.length() - 1) + "_id") + "|";
         }
-        return getData(rows);
+        return Tools.getData(rows);
     }
 
     private String getEntity(String table, String fieldName, String id) throws SQLException {

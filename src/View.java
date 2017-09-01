@@ -1,6 +1,6 @@
 import java.util.List;
 
-public class View extends Auction {
+public class View {
 
     public final String[] addSellerString = {
             "id",
@@ -56,7 +56,7 @@ public class View extends Auction {
         System.out.println();
         String[] dataFormat;
         for (int i = 0; i < listQuery.size(); i++) {
-            dataFormat = getData(listQuery.get(i));
+            dataFormat = Tools.getData(listQuery.get(i));
             for (int j = 0; j < columnNames.length; j++) {
                 System.out.printf(fFormat[j], dataFormat[j]);
             }

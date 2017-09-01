@@ -1,5 +1,5 @@
 
-public class Bid extends Auction {
+public class Bid {
 
     private int bidId;
     private int bidStep;
@@ -9,10 +9,10 @@ public class Bid extends Auction {
 
     public Bid(String bidId, String bidStep, String bidCurrent, String buyerId, String productId) {
         this.bidId = Integer.parseInt(bidId);
-        this.bidStep = Integer.parseInt(parseNull(bidStep));
-        this.bidCurrent = Integer.parseInt(parseNull(bidCurrent));
-        this.buyerId = Integer.parseInt(parseNull(buyerId));
-        this.productId = Integer.parseInt(parseNull(productId));
+        this.bidStep = Integer.parseInt(Tools.parseNull(bidStep));
+        this.bidCurrent = Integer.parseInt(Tools.parseNull(bidCurrent));
+        this.buyerId = Integer.parseInt(Tools.parseNull(buyerId));
+        this.productId = Integer.parseInt(Tools.parseNull(productId));
     }
 
     public int getBidId() {
